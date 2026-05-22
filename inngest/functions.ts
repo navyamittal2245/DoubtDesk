@@ -6,38 +6,17 @@ import { doubtsTable, usersTable } from "../configs/schema";
 import { eq } from "drizzle-orm";
 import { emailNotificationLimiter } from "../lib/ratelimit";
 import { sendReplyNotificationEmail } from "../lib/email";
-import type { EventPayload, Step } from "inngest";
-
-// Define event payload types
-interface HelloWorldEventPayload {
-  name: "test/hello.world";
-  data: {
-    email: string;
-  };
-}
-
-interface ReplyCreatedEventPayload {
-  name: "reply.created";
-  data: {
-    doubtId: string;
-    replyId: string;
-    replierName: string;
-    replierEmail: string;
-    replyContent: string;
-  };
-}
-
 export const helloWorld = inngest.createFunction(
   { id: "hello-world", triggers: [{ event: "test/hello.world" }] },
-  async ({ event, step }: { event: EventPayload<HelloWorldEventPayload>; step: Step }) => {
+  async ({ event, step }: { event: any; step: any }) => {
     await step.sleep("wait-a-moment", "1s");
-    return { message: `Hello ${event.data.email}!` };
+    return { message: `Hello ${(event.data as any).email}!` };
   }
 );
 
 export const cleanupTempAssets = inngest.createFunction(
   { id: "cleanup-temp-assets", triggers: [{ cron: "0 * * * *" }] },
-  async ({ step }: { step: Step }) => {
+  async ({ step }: { step: any }) => {
     const deletedFiles = await step.run("delete-old-files", async () => {
       const tempDir = path.resolve("./public/temp-assets");
       const videosDir = path.resolve("./public/videos");
@@ -70,7 +49,7 @@ export const cleanupTempAssets = inngest.createFunction(
 
 export const sendReplyNotification = inngest.createFunction(
   { id: "send-reply-notification", triggers: [{ event: "reply.created" }] },
-  async ({ event, step }: { event: EventPayload<ReplyCreatedEventPayload>; step: Step }) => {
+  async ({ event, step }: { event: any; step: any }) => {
     const { doubtId, replyId, replierName, replierEmail, replyContent } = event.data;
 
     // 1. Fetch parent doubt and original author details
