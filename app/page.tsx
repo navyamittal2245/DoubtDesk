@@ -34,6 +34,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import ShapeGrid from "@/components/ShapeGrid";
 import { Inter, Staatliches } from "next/font/google";
 import ClassroomPreviewCard from "@/components/ClassroomPreviewCard";
+import LiveCampusThreadPanel from "@/components/LiveCampusThreadPanel";
 
 const inter = Inter({ subsets: ["latin"] });
 const staatliches = Staatliches({ weight: "400", subsets: ["latin"] });
@@ -273,7 +274,8 @@ export default function Home() {
             </div>
 
             <div className="flex items-center justify-center xl:justify-end xl:pt-16">
-              <ClassroomPreviewCard />
+              {/* Replace or enhance the right-side card with the new Live Campus Thread panel */}
+              <LiveCampusThreadPanel />
             </div>
 
           </div>
